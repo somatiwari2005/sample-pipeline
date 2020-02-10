@@ -5,7 +5,10 @@ node {
         checkout scm
         bat './mvnw clean package -DskipTests'
     }    
-    
+	stage('Application_Dependency_Check') {
+        bat './mvnw dependency-check:check'        
+        dependencyCheckPublisher canComputeNew: false, defaultEncoding: '', heal	thy: '', pattern: '**/dependency-check-report.xml', unHealthy: ''
+    }    
     stage('Application_Unit_Test') {        
         bat './mvnw compiler:testCompile surefire:test'
         step([$class: 'JUnitResultArchiver', testResults: "**/surefire-reports/*.xml"])
